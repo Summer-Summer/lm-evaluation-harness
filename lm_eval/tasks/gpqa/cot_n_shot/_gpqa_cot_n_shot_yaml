@@ -48,7 +48,7 @@ filter_list:
   - name: "strict-match"
     filter:
       - function: "regex"
-        regex_pattern: "(?<=The final answer is )(.*)(?=.)"
+        regex_pattern: "The final answer is.*?\\(([A-Z])\\)"
       - function: "take_first"
   - name: "flexible-extract"
     filter:
