@@ -2,28 +2,57 @@ tag:
   - math_word_problems
 task: aime25
 dataset_path: math-ai/aime25
-# dataset_name: null
 output_type: generate_until
 training_split: test
-fewshot_split: test
+fewshot_split: null
 test_split: test
-doc_to_text: "Question: {{problem}}\nAnswer:"
+doc_to_text: "Please reason step by step.
+
+Important: Always end your solution with the final answer in one of these formats:
+
+1. \\[
+   \\boxed{X}.
+   \\]
+
+2. $n=\\boxed{X}$
+
+where X is your integer answer between 0 and 999.
+
+Problem: {{problem}}
+"
 doc_to_target: "{{answer}}"
-process_results: !function utils.process_results
 metric_list:
   - metric: exact_match
     aggregation: mean
     higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: false
+    regexes_to_ignore:
+      - ','
+      - \$
+      - \.$
 generation_kwargs:
   until:
-    - "Question:"
-    - "</s>"
     - "<|im_end|>"
-    - "<|eot_id|>"
-  do_sample: false
-  temperature: 0.0
-  max_gen_toks: 32768
+    - "<|endoftext|>"
+  do_sample: true
+  temperature: 0.6
+  top_p: 0.95
+  top_k: 20
 repeats: 1
 num_fewshot: 0
+filter_list:
+  - name: "strict-match"
+    filter:
+      - function: "regex"
+        regex_pattern: "\\$n=\\\\boxed\\{(\\d+)\\}\\$|\\\\\\[\\\\boxed\\{(\\d+)\\}\\.?\\\\\\]|\\\\boxed\\{(\\d+)\\}"
+        group_select: -1
+      - function: "take_first"
+  - name: "flexible-extract"
+    filter:
+      - function: "regex"
+        group_select: -1
+        regex_pattern: "\\$n=\\\\boxed\\{(\\d+)\\}\\$|\\\\\\[\\\\boxed\\{(\\d+)\\}\\.?\\\\\\]|\\\\boxed\\{(\\d+)\\}|boxed\\{(\\d+)\\}|(?:final\\s+)?answer\\s+is[^\\d]*(\\d+)|answer[^\\d]*(\\d+)|=(\\d+)$"
+      - function: "take_first"
 metadata:
-  version: 0.0
+  version: 1.0
