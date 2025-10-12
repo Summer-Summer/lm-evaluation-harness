@@ -55,13 +55,16 @@ filter_list:
   - function: take_first
   name: flexible-extract
 generation_kwargs:
-  do_sample: false
   until:
   - '<|eot_id|>'
   - '<|start_header_id|>user<|end_header_id|>'
   - 'Q:'
   - </s>
   - <|im_end|>
+  do_sample: true
+  temperature: 0.6
+  top_p: 0.95
+  top_k: 20
 tag:
 - chain_of_thought
 metadata:
