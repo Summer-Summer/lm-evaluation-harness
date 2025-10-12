@@ -60,9 +60,12 @@ filter_list:
       - function: "take_first"
 generation_kwargs:
   until:
-    - "</s>"
-  do_sample: false
-  temperature: 0.0
+    - "<|im_end|>"
+    - "<|endoftext|>"
+  do_sample: true
+  temperature: 0.6
+  top_p: 0.95
+  top_k: 20
 metric_list:
   - metric: exact_match
     aggregation: mean
