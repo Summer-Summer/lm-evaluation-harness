@@ -4,7 +4,7 @@ output_type: generate_until
 process_docs: !function utils.process_docs
 # Because huggingface dataset only has train split
 test_split: train
-description: "Answer the following multiple choice questions. The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. Think step by step before answering.\n\n"
+description: "Answer the following multiple choice question. The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. Think step by step before answering.\n\n"
 doc_to_text: "{{Question}}\n\nA) {{choice1}}\nB) {{choice2}}\nC) {{choice3}}\nD) {{choice4}}"
 doc_to_target: answer
 # The following few-shot examples are used by the author of the GPQA dataset.
